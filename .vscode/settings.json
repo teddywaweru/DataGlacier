@@ -1,0 +1,7 @@
+{
+    "python.testing.pytestArgs": [
+        "Week1_VC"
+    ],
+    "python.testing.unittestEnabled": false,
+    "python.testing.pytestEnabled": true
+}
