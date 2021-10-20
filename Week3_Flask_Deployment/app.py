@@ -1,10 +1,13 @@
 """Landing page for Flask Deployment app"""
 
 
+import sys
 import pickle
-from flask import Flask
+from flask import Flask, request
 from flask import render_template
-# from flask.wrappers import Request
+
+
+
 
 app = Flask(__name__)
 app.config['TEMPLATES_AUTO_RELOAD'] = True
@@ -18,19 +21,36 @@ class LoadModel(object):
 
     def load_model(self):
         '''Loading Model'''
-        self.prediction_model = pickle.load(open('model.pkl','rb'))
+        with open('model.pkl','rb') as f:
+            self.prediction_model = pickle.load(f)
+        print('Successfully loaded model')
         return self.prediction_model
+
+    def prediction(self, trial):
+        x = self.prediction_model(trial)
+        return (x)
 
 @app.route('/')
 def index():
     """Landing Page loading"""
     return render_template('index.html')
 
-@app.route('/get_prediction', methods = ['POST'])
+@app.route('/predict', methods = ['POST'])
 def get_prediction():
     """Landing Page loading"""
-    return render_template('secondpage.html')
+    age = request.form.get('age')
+    sibling = request.form.get('sibling')
+    parents = request.form.get('parents')
+
+    x = LoadModel().prediction([1,77,8])
+
+
+    # sys.stdout.write(age)
+    # logger.info()
+    predict = True
+    return render_template('index.html', predict = predict, age = age, x = x )
 
 
 if __name__ == '__main__':
+    LoadModel().load_model()
     app.run()
