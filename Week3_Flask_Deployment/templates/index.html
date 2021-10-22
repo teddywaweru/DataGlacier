@@ -7,7 +7,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
     rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
     crossorigin="anonymous">
-    <link rel="stylesheet" url_for="style.css">
+    <link rel="stylesheet" href = "{{ url_for('static',filename = 'stylesheets/style.css') }}">
+    <!-- Jinja syntax for connecting static files. Requires Static Folder as an endpoint -->
     <title>Flask Deployment</title>
 </head>
 <body>
@@ -16,6 +17,8 @@
         <a href="secondpage.html">Second Page</a>
     </button>
     
+    <!-- create form form for data entry:
+    Age, No. of Siblings, No. of Preants, Gender -->
     <form action="/predict" method="post">
         <div class="form-group">
             <label for="age">Age</label>
@@ -40,15 +43,20 @@
           <button type="submit" class="btn btn-primary">Submit</button>
     </form>
 
+    <!-- Jinja code output dependent on outcome from ML algorithm. -->
       <br><br>
       {% if predict %}
         <h2>Working then?</h2>
-        <p>The result:  {{predict}}</p>
-        <p>The age value is:  {{age}}</p>
-        <p>The x value is:  {{x}}</p>
 
+        {% if predict_results %}
+          <p>The person survived the Titanic Crash. Hurrah!</p>
 
-        <p>Predict is false</p>
+        {% else%}
+          <p>The person did not survive the Titanic Crash. Naah!</p>
+
+        {%endif%}
+        <p>The sibling count is:  {{age}}</p>
+  
       {% endif %}
 
     <div>
