@@ -14,6 +14,38 @@
 
     <h1>Hello World</h1>
 
+    <form>
+        <div class="form-group">
+            <label for="gender">Gender</label>
+            <select class="form-control" id="gender" placeholder="Gender">
+              <option>Male</option>
+              <option>Female</option>
+            </select>
+          </div>
+        <div class="form-group">
+          <label for="age">Age</label>
+          <input type="age" class="form-control" id="age" aria-describedby="emailHelp" placeholder="Enter Age">
+        </div>
+        <div class="form-group">
+          <label for="internet_time">Time Spent on the Internet (minutes)</label>
+          <input type="internet_time" class="form-control" id="internet_time" placeholder="Enter time spent on the internet (minutes)">
+        </div>
+        <div class="form-group">
+          <label for="internet_time">Time Spent on the Website (minutes)</label>
+          <input type="internet_time" class="form-control" id="site_time" placeholder="Enter time spent on the Website (minutes)">
+        </div>
+        <div class="form-group">
+          <label for="internet_time">Area Income</label>
+          <input type="internet_time" class="form-control" id="area_income" placeholder="Enter Area Income">
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+      </form>
+
+
+      {%if predicted%}
+        <p>{predicted}</p>
+
+      {%endif%}
     
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"
     integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB" crossorigin="anonymous"></script>
