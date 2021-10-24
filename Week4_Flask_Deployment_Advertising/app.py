@@ -7,8 +7,8 @@ from flask import Flask, request, render_template
 
 
 app = Flask(__name__)
-#Enable reloading changes on HTML pages.
 app.config['TEMPLATES_AUTO_RELOAD'] = True
+#Enable reloading changes on HTML pages.
 
     #Load the Prediction Model to prediction_model
 def load_model():
@@ -24,7 +24,7 @@ def prediction(age, internet_time, site_time, area_income):
     """
     Carry out prediction depending on variables provided.
     """
-    prediction_value = load_model().predict([age, internet_time, site_time, area_income])
+    prediction_value = load_model().predict([[age, internet_time, site_time, area_income]])
 
     return prediction_value
 
@@ -38,8 +38,8 @@ def index():
 
 
 #create routes to be accessed by the HTML page. Predict Render
-@app.route('/predict')
-def predict():
+@app.route('/predict', methods = ['POST'])
+def get_prediction():
     """
     Collect form data, store & pass to prediction function.
     """
@@ -48,13 +48,16 @@ def predict():
     site_time = request.form.get('site_time')
     area_income = request.form.get('area_income')
 
-    prediction(age, internet_time, site_time, area_income)
+    prediction_value = prediction(age, internet_time, site_time, area_income)
 
     predicted = True
 
-    render_template('index.html',
-                    predicted = predicted, age = age, internet_time = internet_time,
-                    site_time = site_time, area_income = area_income )
+    return render_template('index.html',
+                    predicted = predicted, age = age,
+                    internet_time = internet_time,
+                    site_time = site_time,
+                    area_income = area_income,
+                    prediction_value = prediction_value)
 
 #initialize application
 if __name__ == '__main__':
