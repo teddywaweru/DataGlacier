@@ -32,5 +32,6 @@ def call_sport():
 
 if __name__ == "__main__":
     call_sport()
-
-call_sport()
+    
+    #TeddyW - fn below was removed from code due to forming issues when running tests. Also, an unnecessary fn call.
+#call_sport()
