@@ -131,3 +131,6 @@ dmypy.json
 
 #word Documents
 .docx
+
+# Big data
+Article_Writing\datasets
