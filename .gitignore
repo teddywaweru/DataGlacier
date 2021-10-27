@@ -128,8 +128,9 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-#Word Documents
+
+#word Documents
 *.docx
 
-#Large Datasets
+# Big data
 Article_Writing/datasets
