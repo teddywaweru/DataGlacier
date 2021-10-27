@@ -130,7 +130,7 @@ dmypy.json
 
 
 #word Documents
-.docx
+*.docx
 
 # Big data
-Article_Writing\datasets
+Article_Writing/datasets
