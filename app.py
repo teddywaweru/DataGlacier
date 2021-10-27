@@ -15,8 +15,7 @@ def load_model():
     """
     create functions for loading the models
     """
-    script_location = Path(__file__)
-    prediction_model = pickle.load(open(script_location / '../adv_pred_model.pkl', 'rb'))
+    prediction_model = pickle.load(open('static/adv_pred_model.pkl', 'rb'))
     return prediction_model
 
 #create functions for carrying out predictions
