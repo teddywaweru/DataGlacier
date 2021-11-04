@@ -136,3 +136,6 @@ dmypy.json
 Article_Writing/datasets
 Week6_FileIngestion_SchemaValidation/datasets
 
+#Dask Worker files
+Week6_FileIngestion_SchemaValidation/dask-worker-space
+
