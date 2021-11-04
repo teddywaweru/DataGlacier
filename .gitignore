@@ -135,3 +135,4 @@ dmypy.json
 # Big data
 Article_Writing/datasets
 Week6_FileIngestion_SchemaValidation/datasets
+Week6_FileIngestion_SchemaValidation/dask-worker-space
