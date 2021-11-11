@@ -1,0 +1,69 @@
+#Update Validation.yaml file with details of the json file
+file_type : csv
+file_name : Parking_Violations_Issued_-_Fiscal_Year_2015
+columns :
+        - SUMMONS_NUMBER
+        - PLATE_ID
+        - REGISTRATION_STATE
+        - PLATE_TYPE
+        - ISSUE_DATE
+        - VIOLATION_CODE
+        - VEHICLE_BODY_TYPE
+        - VEHICLE_MAKE
+        - ISSUING_AGENCY
+        - STREET_CODE_1
+        - STREET_CODE_2
+        - STREET_CODE_3
+        - VEHICLE_EXPIRATION_DATE
+        - VIOLATION_LOCATION
+        - VIOLATION_PRECINCT
+        - ISSUER_PRECINCT
+        - ISSUER_CODE
+        - ISSUER_COMMAND
+        - ISSUER_SQUAD
+        - VIOLATION_TIME
+        - TIME_FIRST_OBSERVED
+        - VIOLATION_COUNTY
+        - VIOLATION_IN_FRONT_OF_OR_OPPOSITE
+        - HOUSE_NUMBER
+        - STREET_NAME
+        - INTERSECTING_STREET
+        - DATE_FIRST_OBSERVED
+        - LAW_SECTION
+        - SUB_DIVISION
+        - VIOLATION_LEGAL_CODE
+        - DAYS_PARKING_IN_EFFECT
+        - FROM_HOURS_IN_EFFECT
+        - TO_HOURS_IN_EFFECT
+        - VEHICLE_COLOR
+        - UNREGISTERED_VEHICLE
+        - VEHICLE_YEAR
+        - METER_NUMBER
+        - FEET_FROM_CURB
+        - VIOLATION_POST_CODE
+        - VIOLATION_DESCRIPTION
+        - NO_STANDING_OR_STOPPING_VIOLATION
+        - HYDRANT_VIOLATION
+        - DOUBLE_PARKING_VIOLATION
+        - LATITUDE
+        - LONGITUDE
+        - COMMUNITY_BOARD
+        - COMMUNITY_COUNCIL
+        - CENSUS_TRACT
+        - BIN
+        - BBL
+        - NTA
+datatype:
+        {
+        'Meter Number' : object,
+        'Time First Observed' : object,
+        'Violation Location' : object,
+        'Violation Legal Code' : object,
+        'Double Parking Violation': object,
+        'Hydrant Violation': object,
+        'No Standing or Stopping Violation': object,
+        'Feet From Curb': 'float64',
+        'Law Section': 'float64',
+        'Vehicle Year': 'float64', 
+        'Issuer Squad' : object
+        }
