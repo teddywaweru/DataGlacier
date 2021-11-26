@@ -69,7 +69,7 @@ def train_model_dt(train_ds):
     optimizer = nlp.begin_training()            #optimizer declaration
     other_pipes = [pipe for pipe in nlp.pipe_names if pipe != 'ner']
     with nlp.disable_pipes(*other_pipes):       #disable all other components in the pipeline
-        for itn in range(3):                    #Number of iterations for training the model
+        for itn in range(10):                    #Number of iterations for training the model
             print('Starting iteration')
             random.shuffle(train_ds)          #Randomize the data in the set?
             losses = {}
