@@ -1,0 +1,18 @@
+{
+  "labels":[
+    "Companies worked at",
+    "Skills",
+    "Graduation Year",
+    "College Name",
+    "Degree",
+    "Designation",
+    "Email Address",
+    "Location",
+    "Name",
+    "Years of Experience",
+    "UNKNOWN"
+  ],
+  "spans_key":"sc",
+  "threshold":0.5,
+  "max_positive":null
+}

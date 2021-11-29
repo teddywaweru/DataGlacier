@@ -1,10 +1,53 @@
 import spacy
 from spacy.training import Example      #imported in scenarios where the NER model is to be fed preprocessed data
 from spacy.tokens import Doc, Span
+from spacy.scorer import Scorer
+scorer = Scorer()
 from spacy import displacy
 # nlp = spacy.load("en_core_web_sm")
 import random
 import json
+
+
+#Utilizing Spacy's SpanCategorizer Pipeline for overlapping spans
+def train_model_sc(train_ds):
+    nlp = spacy.blank('en') #create a blank entity model
+    if 'spancat' not in nlp.pipe_names:     
+        spancat = nlp.add_pipe('spancat')       #adding the SpanCategorizer component to the pipeline
+
+    for _, annotation in train_ds:                  
+        for entity in annotation['entities']:    #loop through the dataset to select the entity labels to be used by the component
+            spancat.add_label(entity[2])
+
+    optimizer = nlp.initialize()            #optimizer declaration
+    other_pipes = [pipe for pipe in nlp.pipe_names if pipe != 'spancat']
+    with nlp.disable_pipes(*other_pipes):       #disable all other components in the pipeline
+        for itn in range(5):                    #Number of iterations for training the model
+            print('Starting iteration')
+            random.shuffle(train_ds)          #Randomize the data in the set?
+            losses = {}
+            index = 0
+            for item in train_ds:
+                doc = nlp.make_doc(item[0])
+                annotation, annotation_overlap = check_annotation(item[1]['entities'])
+                example1 = Example.from_dict(doc, {'entities': annotation})
+                # example2 = Example.from_dict(doc, {'entities': annotation_overlap})
+                try:
+                    nlp.update(
+                        [example1],
+                        drop = 0.2,
+                        sgd = optimizer,
+                        losses = losses
+                        )
+                except Exception as e:
+                    pass
+                # print(spacy.training.offsets_to_biluo_tags(nlp.make_doc(item['content']), annotation))
+                print(losses)
+                # print(text)
+                # print(annotation)
+
+
+    nlp.to_disk('nlp_model_sc')
 
 #Utilizing the Spacy resume format
 def train_model_sp(train_ds):
@@ -12,29 +55,25 @@ def train_model_sp(train_ds):
     if 'ner' not in nlp.pipe_names:     
         ner = nlp.add_pipe('ner')       #adding the ner component to the pipeline
 
-    for _, annotation in train_ds:                  
-        for entity in annotation['entities']:    #loop through the dataset to select the entity labels to be used by the component
-            ner.add_label(entity[2])
 
                 
 
     optimizer = nlp.begin_training()            #optimizer declaration
     other_pipes = [pipe for pipe in nlp.pipe_names if pipe != 'ner']
     with nlp.disable_pipes(*other_pipes):       #disable all other components in the pipeline
-        for itn in range(2):                    #Number of iterations for training the model
+        for itn in range(5):                    #Number of iterations for training the model
             print('Starting iteration')
             # random.shuffle(train_ds)          #Randomize the data in the set?
             losses = {}
             index = 0
-            # batches = spacy.util.minibatch(train_ds, size = 10)
-            for batch in batches:
-                print(batch)
-                texts, annotations = zip(*batch)
-            for text, annotation in train_ds:
+            for item in train_ds:
+                doc = nlp.make_doc(item[0])
+                annotation, annotation_overlap = check_annotation(item[1]['entities'])
+                example1 = Example.from_dict(doc, {'entities': annotation})
+                example2 = Example.from_dict(doc, {'entities': annotation_overlap})
                 try:
                     nlp.update(
-                        texts,
-                        annotations,
+                        [example1],
                         drop = 0.2,
                         sgd = optimizer,
                         losses = losses
@@ -52,6 +91,8 @@ def train_model_sp(train_ds):
                 print(losses)
                 # print(text)
                 # print(annotation)
+    nlp.to_disk('nlp_model_sp')
+
 
 
 #Utilizing the DataTurk resume format
@@ -63,12 +104,12 @@ def train_model_dt(train_ds):
     for item in train_ds:                  
         for entities in item['annotation']:     
             for entity in entities['label']:    #loop through the dataset to select the entity labels to be used by the component
-                ner.add_label(entity)
+                ner.add_label(entity[0])
                 
 
-    optimizer = nlp.begin_training()            #optimizer declaration
     other_pipes = [pipe for pipe in nlp.pipe_names if pipe != 'ner']
     with nlp.disable_pipes(*other_pipes):       #disable all other components in the pipeline
+        optimizer = nlp.begin_training()            #optimizer declaration
         for itn in range(10):                    #Number of iterations for training the model
             print('Starting iteration')
             random.shuffle(train_ds)          #Randomize the data in the set?
@@ -88,9 +129,12 @@ def train_model_dt(train_ds):
                 # doc_tokens = find_tokens(annotation, doc)
                 # doc.set_ents([Span(doc, token[0], token[1], token[2]) for token in doc_tokens])
 
-                annotation, annotation_dup = check_annotation(annotation)       #Verify on overlapping entities & return annotation list
+                annotation, annotation_overlap = check_annotation(annotation)       #Verify on overlapping entities & return annotation lists without overlaps
+                
                 example1 = Example.from_dict(doc, {'entities' : annotation})
-                example2 = Example.from_dict( doc, {'entities' : annotation_dup})
+                example1_scores = scorer.score([example1])
+                example2 = Example.from_dict( doc, {'entities' : annotation_overlap})
+                # example2_scores = scorer.score(example2)
 
                 #Print token entities & tokens
                 # eg = example1.to_dict()
@@ -115,9 +159,11 @@ def train_model_dt(train_ds):
 
                 # displacy.serve(doc,style = 'ent')
                 print(losses)
-    nlp.to_disk('nlp_model')
+    nlp.to_disk('nlp_model_dt')
 
 
+
+#Load model to memory
 def spacy_load_model(model):
     nlp_model = spacy.load(model)
     return nlp_model
@@ -127,8 +173,10 @@ def check_annotation(annotation):
     rmv_idx = []                        #list to hold annotations to be removed
     dup_tags = []
     dup_words = []
-    annotation_dup = []
-    
+    annotation_overlap = []
+    for item in annotation:
+        item = list(item)
+        item[1] += item[1] + 1
     annotation = list(set(annotation))  #remove duplicate entities
     # for i in rmv_idx:
     #     print(annotation[i])
@@ -139,16 +187,16 @@ def check_annotation(annotation):
                     # print('Comparative Item: \t{} \n Item: \t\t\t{}' .format(comp_item, item))
                     # if ((item[1] - item[0]) > (comp_item[1] - comp_item[0])):
                         # doc = nlp(item_['annotation']['points'][0]['text'])
-                    if item[:3] in annotation_dup: #Disregard item that is already in the annotation_dup
+                    if item[:3] in annotation_overlap: #Disregard item that is already in the annotation_overlap
                         pass
                     else:    
-                        dup_tags = comp_item[2]
-                        dup_words = comp_item[3]
-                        annotation_dup.append(comp_item[:3])
+                        # dup_tags = comp_item[2]
+                        # dup_words = comp_item[3]
+                        annotation_overlap.append(comp_item[:3])
                         rmv_idx.append(annotation.index(comp_item))
     for x in sorted(list(set(rmv_idx)),  reverse = True):               #iterate through the list of reverse ordered & unique values of rmv_idx  
         annotation.pop(x)                                               # pop
-    return ([i[:3] for i in annotation], list(set(annotation_dup)))
+    return ([i[:3] for i in annotation], list(set(annotation_overlap)))
 
 
 def load_data(file_path):
