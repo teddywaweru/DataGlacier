@@ -59,6 +59,7 @@ datatype:
         'Time First Observed' : object,
         'Violation Location' : object,
         'Violation Legal Code' : object,
+        'Violation Post Code' : object,
         'Double Parking Violation': object,
         'Hydrant Violation': object,
         'No Standing or Stopping Violation': object,
